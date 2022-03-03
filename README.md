@@ -1,34 +1,40 @@
 # MongoDB-LocalhostInstance-Creation-Tool
 Simple cli tool that creates a new MongoDB instance that runs in the background with the specified database path and localhost port for Windows 10/11
 
+## Build
+
+Build with Visual Studio & add the `bin\Release\net5.0` folder to your path or run `create-mongodb-instance.exe` directly
+
 ## Usage
-
-Build in Visual Studio & add the `bin` folder to your path
-
-Example:
 ```powershell
-PS C:\> create-mongodb-instance Desktop\MongoDB-Local\data-1 27017
-
-MongoDB instance created successfully...
-  connection string = mongodb://localhost:27017
-  dbPath = C:\MongoDB-Local\data-1
-  port = 27017
-  pid = 19132
-
-Run the following command in Command Prompt or Powershell to kill this instance:
-  cmd: taskkill /F /PID 19132
+create-mongodb-instance [file-path-to-db] [local-port-to-use] [copy-taskkill-cmd-to-clipboard: y | n]
 ```
 
-Run the same command with a different `port` & `database path` to create a second local MongoDB database
+## Example:
+
 ```powershell
-PS C:\> create-mongodb-instance Desktop\MongoDB-Local\data-2 27018
+PS C:\> create-mongodb-instance Desktop\MongoDB-Local\data-1 27017 y
 
-MongoDB instance created successfully...
+MongoDB instance created successfully:
+  connection string = mongodb://localhost:27017
+  dbPath = C:\Users\rstewar2\Desktop\MongoDB-Local\data-1
+  port = 27017
+  pid = 11312
+
+To kill this instance run:
+  'taskkill /F /PID 11312' (copied to clipboard = True)
+```
+
+Run the same command with a different `port` & `database-path` to create a second local MongoDB instance
+```powershell
+PS C:\> create-mongodb-instance Desktop\MongoDB-Local\data-2 27018 y
+
+MongoDB instance created successfully:
   connection string = mongodb://localhost:27018
-  dbPath = C:\MongoDB-Local\data-1
+  dbPath = C:\Users\rstewar2\Desktop\MongoDB-Local\data-2
   port = 27018
-  pid = 16172
+  pid = 15604
 
-Run the following command in Command Prompt or Powershell to kill this instance:
-  cmd: taskkill /F /PID 16172
+To kill this instance run:
+  'taskkill /F /PID 15604' (copied to clipboard = True)
 ```
