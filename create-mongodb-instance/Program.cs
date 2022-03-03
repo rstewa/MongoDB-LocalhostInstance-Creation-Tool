@@ -1,32 +1,25 @@
 ﻿namespace create.mongodb.instance
 {
+    using System;
     using System.Diagnostics;
-    using System.IO;
     using System.Drawing;
+    using System.IO;
+    using TextCopy;
     using Console = Colorful.Console;
 
     internal static class Program
     {
-        private static void usage()
-        { 
-            Console.WriteLine("Usage: create-mongodb-instance [file-path-to-db] [local-port-to-use]\n" +
-                              "Example: create-mongodb-instance C:\\data 27017");
-        }
         private static void Main(string[] args)
         {
-            if (args.Length != 2 ||
-                string.CompareOrdinal(args[0], "-h") == 0 || 
-                string.CompareOrdinal(args[0], "--help") == 0)
-            {
-                usage();
-                return;
-            }
+            if (args.Length != 3) Usage();
+            if (args[0] == "-h" || args[0] == "--help") Usage();
+            if (args[2] != "y" && args[2] != "n") Usage();
 
-            // todo: check these lol
             var dbPath = args[0];
             var port = args[1];
 
-            if (!Directory.Exists(dbPath)) { Directory.CreateDirectory(dbPath); }
+            try { Directory.CreateDirectory(dbPath); }
+            catch(Exception e) { Console.Error.WriteLine($"Exception = {e.Message}"); }
 
             const string cmd = "mongod";
             var p = new Process { StartInfo = new ProcessStartInfo(cmd) };
@@ -35,8 +28,8 @@
             p.StartInfo.CreateNoWindow = true; // so it can run in the background
             p.StartInfo.UseShellExecute = false;
             p.Start();
-            
-            Console.WriteLine("\nMongoDB instance created successfully...");
+
+            Console.WriteLine("\nMongoDB instance created successfully:");
             Console.Write("  connection string = ");
             Console.Write($"mongodb://localhost:{port}\n", Color.Lime);
             Console.Write("  dbPath = ");
@@ -47,10 +40,24 @@
             var pid = p.Id;
             Console.Write("  pid = ");
             Console.Write($"{pid}\n", Color.Lime);
+
+            var killCmd = $"taskkill /F /PID {pid}";
+            if (args[2] == "y") ClipboardService.SetText(killCmd);
             
-            Console.WriteLine("\nRun the following command in Command Prompt or Powershell to kill this instance:");
-            Console.Write("  cmd: ");
-            Console.Write($"taskkill /F /PID {pid}\n", Color.Red);
+            Console.WriteLine("\nTo kill this instance run: ");
+            Console.Write($"  '{killCmd}'", Color.Red);
+            Console.Write(" (copied to clipboard = ");
+            Console.Write($"{args[2] == "y"}", Color.Lime);
+            Console.Write(")\n\n");
+        }
+
+        private static void Usage()
+        {
+            Console.Write("  Usage: ");
+            Console.Write("create-mongodb-instance [file-path-to-db] [local-port-to-use] [copy-taskkill-cmd-to-clipboard: y | n]\n", Color.Red);
+            Console.Write("  Example: ");
+            Console.Write("create-mongodb-instance C:\\data 27017 y\n", Color.Lime);
+            Environment.Exit(0);
         }
     }
 }

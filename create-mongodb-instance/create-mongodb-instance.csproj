@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <PackageReference Include="Colorful.Console" Version="1.2.15" />
+      <PackageReference Include="TextCopy" Version="6.1.0" />
     </ItemGroup>
 
 </Project>
